@@ -14,6 +14,7 @@ import UserDescriptions from './UserDescriptions';
 import UserProfile from './UserProfile';
 import Chat from './Chat';
 import SearchMap from './SearchMap';
+import FriendsList from './FriendsList';
 
 const TabNavigator = createMaterialBottomTabNavigator({
   'My Orgs': {
@@ -55,7 +56,8 @@ const NavStack = createStackNavigator({
   Details: OrganizationInfo,
   Descriptions: UserDescriptions,
   Chat: Chat,
-  UserProfile: UserProfile
+  UserProfile: UserProfile,
+  Friends: FriendsList
 }, {
   headerMode: 'screen',
   initialRouteName: 'Home',

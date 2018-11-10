@@ -167,6 +167,7 @@ const mapState = ({ organizationRequests, user, forms, descriptions }, { navigat
   });
   const descriptionConfirm = !boolFormDescriptions.includes(false)
   const checkedIn = !!user.checkedInId
+  console.log(ownRequest);
   return {
     user,
     ownRequest,

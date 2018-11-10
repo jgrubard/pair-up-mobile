@@ -3,6 +3,7 @@ import { Text, View, StyleSheet, TextInput, FlatList, TouchableOpacity } from 'r
 import { connect } from 'react-redux';
 import MapView, { Marker, Callout } from 'react-native-maps';
 import Icon from 'react-native-vector-icons/FontAwesome'
+import { black } from 'ansi-colors';
 
 class SearchMap extends React.Component {
   static navigationOptions = {
@@ -33,7 +34,17 @@ class SearchMap extends React.Component {
 
   search(value) {
     const { organizations } = this.props;
-    const searchList = organizations.filter(org => org.name.toLowerCase().startsWith(value.toLowerCase()));
+    const searchList = organizations.filter(org => {
+      return org.name
+        .split(' ')
+        .join('')
+        .toLowerCase()
+        .includes(value
+          .split(' ')
+          .join('')
+          .toLowerCase()
+        );
+    });
     if(value) {
       this.setState({ searchList });
     } else {
@@ -63,25 +74,28 @@ class SearchMap extends React.Component {
       <View style={styles.container}>
         <MapView
           style={styles.map}
-          region={ coordinates }>
-          {organizations.map((organization) => {
-            const latitude = Number(organization.latitude);
-            const longitude = Number(organization.longitude);
-            const id = organization.id;
-            return (
-              <Marker
-                key={id}
-                coordinate={{
-                  latitude: latitude,
-                  longitude: longitude
-                }}
-              >
-                <Callout onPress={() => navigate('Details', { organization })} style={ styles.callout }>
-                  <Text style={ styles.calloutText }>{organization.name}</Text>
-                </Callout>
-              </Marker>
-            );
-          }
+          region={ coordinates }
+          showsCompass={true}
+        >
+          {
+            organizations.map((organization) => {
+              const latitude = Number(organization.latitude);
+              const longitude = Number(organization.longitude);
+              const id = organization.id;
+              return (
+                <Marker
+                  key={id}
+                  coordinate={{
+                    latitude: latitude,
+                    longitude: longitude
+                  }}
+                >
+                  <Callout onPress={() => navigate('Details', { organization })} style={ styles.callout }>
+                    <Text style={ styles.calloutText }>{organization.name}</Text>
+                  </Callout>
+                </Marker>
+              );
+            }
           )}
         </MapView>
         <View style={ styles.searchContainer }>
@@ -99,7 +113,6 @@ class SearchMap extends React.Component {
               data={ searchList }
               renderItem={ ({ item }) => ListItem(item, this.zoomToMarker) }
               keyExtractor={ (item) => item.id }
-              o
             />
           </View>
         </View>
@@ -179,29 +192,35 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 25
+    marginTop: 25,
+
   },
   search: {
-    width: 350,
+    width: 315,
     height: 40,
+    marginLeft: -35,
     backgroundColor: 'rgb(255, 255, 255)',
-    borderWidth: 1,
-    borderColor: '#000',
+    borderRadius: 5,
     paddingLeft: 15,
+    shadowColor: 'black',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.6,
+    shadowRadius: 2
   },
   listContainer: {
     marginTop: 10
   },
   itemContainer: {
-    width: 350,
+    width: 325,
+    marginTop: 5,
     height: 40,
     backgroundColor: '#fff',
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    borderColor: 'black',
-    borderWidth: 1,
-    borderRadius: 50
+    borderColor: '#02a4ff',
+    borderWidth: 2,
+    borderRadius: 50,
   },
   itemText: {
     fontSize: 15,

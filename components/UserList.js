@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { View, StyleSheet } from 'react-native';
 import { Text, Button } from 'react-native-elements';
 import { createUserRequestOnServer } from '../store';
+import { black } from 'ansi-colors';
 
 class UserList extends Component {
 
@@ -13,12 +14,16 @@ class UserList extends Component {
         <Text h4 style={ styles.header }>Checked-in Members</Text>
         {
           ownUsers.map(user => {
-            const requestSent = userRequests.find(request => request.requesterId === loggedUser.id && request.responderId === user.id && request.organizationId === organization.id)
+            const requestSent = userRequests.find(request => request.requesterId === loggedUser.id && request.responderId === user.id && request.organizationId === organization.id);
+
             const skillInfo = ownForms.reduce((skillSet, form) => {
               const description = descriptions.find(des => des.organizationId === organization.id && des.userId === user.id && des.formId === form.id)
               skillSet.push({ form: form.name, description: description.description})
               return skillSet;
-            }, [])
+            }, []);
+
+            const requestNotNeeded = userRequests.find(request => request.responderId === loggedUser.id && request.requesterId === user.id && request.organizationId === organization.id);
+            
             return (
               <View
                 key={user.id}
@@ -33,12 +38,21 @@ class UserList extends Component {
                 }
                 {
                   !requestSent ? (
-                    <Button
-                      color='#fff'
-                      onPress={() => createRequest({ requesterId: loggedUser.id, responderId: user.id, organizationId: organization.id })}
-                      title='SEND REQUEST'
-                      buttonStyle={ styles.requestButton }
-                    />
+                    requestNotNeeded ? (
+                      <Button
+                        color='#fff'
+                        onPress={() => navigation.navigate('Chat', { receivingUser: user })}
+                        title='CHAT'
+                        buttonStyle={ styles.chatButton }
+                      />
+                    ) : (
+                      <Button
+                        color='#fff'
+                        onPress={() => createRequest({ requesterId: loggedUser.id, responderId: user.id, organizationId: organization.id })}
+                        title='SEND REQUEST'
+                        buttonStyle={ styles.requestButton }
+                      />
+                    )
                   ) :
                     requestSent && requestSent.status === 'pending' ? (
                       <Button
@@ -101,6 +115,9 @@ const styles = StyleSheet.create({
     padding: 20,
     margin: 10,
     justifyContent: 'center',
+    // borderWidth: 3,
+    // borderRadius: 15,
+    // borderColor: '#fff'
   },
   name: {
     textAlign: 'center',

@@ -28,10 +28,16 @@ class UserRequests extends Component {
   }
 
   render() {
-    const { user, users, receivedRequests, updateUserRequest, deleteUserRequest } = this.props;
+    const { user, users, userRequests, receivedRequests, updateUserRequest, deleteUserRequest, navigation: { navigate } } = this.props;
     return (
       <ImageBackground source={ require('../assets/images/bg.png') } style={{ height: '100%', width: '100%' }}>
       <View style={ styles.container }>
+      <Button
+        color='black'
+        buttonStyle={ styles.friendList }
+        title='Friends List'
+        onPress={() => navigate('Friends', { userRequests })}
+      />
         {
           receivedRequests.map(request => {
             const { id, requesterId, responderId, organizationId, status } = request;
@@ -47,21 +53,22 @@ class UserRequests extends Component {
                 <View style={ styles.infoContainer }>
                 <Text style={ styles.name }>{requester.fullName}</Text>
 
-                { status === 'pending' &&
-                  <View>
-                    <Button
-                      buttonStyle={ styles.acceptButton }
-                      title='ACCEPT'
-                      color='#02a4ff'
-                      onPress={ () => updateUserRequest({ id, requesterId, responderId, organizationId, status: 'accepted' }) }
-                    />
-                    <Button
-                      color='#fff'
-                      buttonStyle={ styles.declineButton }
-                      title='DECLINE'
-                      onPress={() => deleteUserRequest(request.id)}
-                    />
-                  </View>
+                { 
+                  status === 'pending' &&
+                    <View>
+                      <Button
+                        buttonStyle={ styles.acceptButton }
+                        title='ACCEPT'
+                        color='#02a4ff'
+                        onPress={ () => updateUserRequest({ id, requesterId, responderId, organizationId, status: 'accepted' }) }
+                      />
+                      <Button
+                        color='#fff'
+                        buttonStyle={ styles.declineButton }
+                        title='DECLINE'
+                        onPress={() => deleteUserRequest(request.id)}
+                      />
+                    </View>
                 }
                 {
                   status === 'accepted' && (
@@ -92,7 +99,8 @@ const mapState = ({ user, users, userRequests }, { navigation }) => {
     user,
     users,
     receivedRequests,
-    newRequestCount
+    newRequestCount,
+    userRequests
   }
 }
 
@@ -174,5 +182,15 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 22,
     textAlign: 'center'
-  }
+  },
+  friendList: {
+    backgroundColor: 'white',
+    borderWidth: 1.5,
+    borderTopColor: '#fff',
+    borderRightColor: '#fff',
+    borderBottomColor: '#fff',
+    borderLeftColor: '#fff',
+    borderRadius: 50,
+    marginBottom: 15
+  },
 })
