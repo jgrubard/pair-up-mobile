@@ -47,6 +47,7 @@ export const getUserFromToken = token => {
       .then(user => {
         dispatch(gotUser(user));
         socket.emit('mobileOnline', user.id);
+        return user;
       })
       .catch(err => {
         AsyncStorage.removeItem('token');

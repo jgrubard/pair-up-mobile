@@ -86,6 +86,27 @@ class MainStack extends React.Component {
     this.loadApp = this.loadApp.bind(this);
   }
 
+  // asyncLoad() {
+  //   const { getUser, getOrganizations, getUserOrganizations, getUsers, getUserRequests, getOrgRequests, getForms, getDescriptions } = this.props;
+  //   return Promise.all([
+  //     AsyncStorage.getItem('token')
+  //       .then(token => {
+  //         if (token) {
+  //           return getUser(token);
+  //         }
+  //       }),
+  //     // getOrganizations(),
+  //     // getUsers(),
+  //     // getUserOrganizations(),
+  //     // getUserRequests(),
+  //     // getOrgRequests(),
+  //     // getForms(),
+  //     // getDescriptions(),
+  //     Asset.fromModule(require('../assets/images/logo.png')).downloadAsync(),
+  //     Asset.fromModule(require('../assets/images/bg.png')).downloadAsync()
+  //   ]);
+  // }
+
   asyncLoad() {
     const { getUser, getOrganizations, getUserOrganizations, getUsers, getUserRequests, getOrgRequests, getForms, getDescriptions } = this.props;
     return Promise.all([
@@ -94,9 +115,17 @@ class MainStack extends React.Component {
           if (token) {
             return getUser(token);
           }
-        }),
+        })
+        .then(user => {
+          if(!user) {
+            throw 'User not logged in'
+          }
+          // console.log(user);
+          getUsers(user.id)
+        })
+        ,
       getOrganizations(),
-      getUsers(),
+      // getUsers(),
       getUserOrganizations(),
       getUserRequests(),
       getOrgRequests(),
@@ -147,7 +176,7 @@ const mapDispatch = dispatch => ({
     return dispatch(getUserFromToken(token));
   },
   getUserOrganizations: () => dispatch(getUserOrganizationsFromServer()),
-  getUsers: () => dispatch(getUsersFromServer()),
+  getUsers: (userId) => dispatch(getUsersFromServer(userId)),
   getUserRequests: () => dispatch(getUserRequestsFromServer()),
   getOrgRequests: () => dispatch(getOrganizationRequestsFromServer()),
   getForms: () => dispatch(getFormsFromServer()),

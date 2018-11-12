@@ -7,11 +7,14 @@ const UPDATE_USER = 'UPDATE_USER';
 const getUsers = users => ({ type: GET_USERS, users });
 export const updateUser = user => ({ type: UPDATE_USER, user });
 
-export const getUsersFromServer = () => {
+export const getUsersFromServer = (userId) => {
   return dispatch => {
-    return axios.get(productionUrl + '/api/users')
+    return axios.get(productionUrl + `/api/users/${userId}`)
       .then(result => result.data)
-      .then(users => dispatch(getUsers(users)))
+      .then(users => {
+        // console.log('thunk:', users.length)
+        dispatch(getUsers(users))
+      })
   }
 }
 

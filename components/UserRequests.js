@@ -41,7 +41,8 @@ class UserRequests extends Component {
         {
           receivedRequests.map(request => {
             const { id, requesterId, responderId, organizationId, status } = request;
-            const requester = users.find(user => user.id === requesterId)
+            const requester = users.find(user => user.id === requesterId);
+            if(!requester) return null;
             return (
               <View
                 key={id}

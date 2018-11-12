@@ -24,7 +24,7 @@ class OrganizationInfo extends React.Component {
   }
 
   componentDidMount() {
-    this.props.loadUsers()
+    // this.props.loadUsers()
   }
 
   onRefresh() {
@@ -151,7 +151,9 @@ class OrganizationInfo extends React.Component {
   }
 }
 
-const mapState = ({ organizationRequests, user, forms, descriptions }, { navigation }) => {
+const mapState = ({ users, organizationRequests, user, forms, descriptions }, { navigation }) => {
+  console.log('USERS:', users);
+  console.log('USER COUNT:', users.length);
   const organization = navigation.getParam('organization', 'no organization');
   const ownRequest = organizationRequests.find(request => {
     return request.userId === user.id && request.organizationId === organization.id
@@ -167,7 +169,7 @@ const mapState = ({ organizationRequests, user, forms, descriptions }, { navigat
   });
   const descriptionConfirm = !boolFormDescriptions.includes(false)
   const checkedIn = !!user.checkedInId
-  console.log(ownRequest);
+  // console.log(ownRequest);
   return {
     user,
     ownRequest,
@@ -186,7 +188,7 @@ const mapDispatch = dispatch => {
       dispatch(updateUserOnServer(user))
       dispatch(updateLoggedUser(user))
     },
-    loadUsers: () => dispatch(getUsersFromServer()),
+    // loadUsers: () => dispatch(getUsersFromServer()),
     loadOrganizations: () => dispatch(getOrganizationsFromServer())
   }
 }

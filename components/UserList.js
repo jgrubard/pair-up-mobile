@@ -82,9 +82,10 @@ class UserList extends Component {
 }
 
 const mapState = ({ user, users, userRequests, forms, descriptions }, { organization, navigation }) => {
-  const ownUsers = users.filter(ownUser => ownUser.checkedInId === organization.id && ownUser.id !== user.id);
+  // console.log(users);
   const loggedUser = user;
-  const ownForms = forms.filter(form => form.organizationId === organization.id)
+  const ownUsers = users.filter(user => user.checkedInId === organization.id && user.id !== loggedUser.id); //  something funky here
+  const ownForms = forms.filter(form => form.organizationId === organization.id);
   return {
     ownUsers,
     loggedUser,
